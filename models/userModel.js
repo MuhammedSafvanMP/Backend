@@ -16,19 +16,29 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    profileimg: {
+    profileImg: {
         type: String,
         required: true
     },
-    filepath: {
+    filePath: {
         type: String,
         required: true
+    },
+    profileThumbImg: {
+        type: String,
+        required: true
+    },
+    accountCreatedDate: {
+        type: Date,
+        required: true,
+        default: Date.now
     },
     isDeleted: {
-        required: false,
+        type: Boolean,
+        default: false
     }
 
-}, {timestamps: true})
+}, {timestamps: true});
 
-const User = mongoose.models("User", userSchema);
+const User = mongoose.model("User", userSchema);
 export default User;
