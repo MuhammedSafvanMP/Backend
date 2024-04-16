@@ -2,10 +2,11 @@ import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import authJoi from "../validation/authJoi.js";
 import jwt from "jsonwebtoken";
+import { errorHandler } from "../error/error.js";
 
 // use sign up
 
-export const signup = async (req, res) => {
+export const signup = async (req, res, next) => {
     try {
         // const { username, email, password } = req.body;
 
@@ -42,18 +43,18 @@ export const signup = async (req, res) => {
     } catch (error) {
         // Handle Joi validation errors
         if (error.isJoi === true) {
-            error.status = 422;
+          
+          return res.status(422).json({ message: "Validation Error", details: error.details });
         }
-        
-        console.log(error);
-        return res.status(500).json({ message: "Internal Server Error" });
+        next(error);
+
     }
 };
 
 
 // use login
 
-export const login =  async (req, res) => {
+export const login =  async (req, res, next) => {
     try {
         
         const { email, password } = req.body;
@@ -61,11 +62,11 @@ export const login =  async (req, res) => {
           // find in user email in mongodb
 
         const validUser = await User.findOne({ email })
-        if(!validUser)  return res.status(404).json({ message: "User not found" })  
+        if(!validUser)  return next(errorHandler(404, "User not found")); 
 
         // checking  password
         const validPassword = bcrypt.compareSync(password, validUser.password);
-        if(!validPassword) return res.status(401).json({ message: "Wrong credentials" }) 
+        if(!validPassword) return next(errorHandler(401, "Wrong credentials"));
 
         // jwt setting
         const token = jwt.sign({ id: validUser._id}, process.env.JWT_SECRET)
@@ -79,7 +80,6 @@ export const login =  async (req, res) => {
 
 
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Internal Server Error" });
+        next(error);
     }
 }
