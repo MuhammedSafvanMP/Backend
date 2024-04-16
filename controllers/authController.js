@@ -2,7 +2,7 @@ import User from "../models/userModel.js";
 
 export const signup = async (req, res) => {
     try {
-        const { username, email, password, profileImg } = req.body;
+        const { username, email, password  } = req.body;
         if (!username || !email || !password) {
             return res.status(400).json({ message: "Bad request" });
         }
@@ -18,7 +18,6 @@ export const signup = async (req, res) => {
             email,
             password,
             profileImg: req.file.filename, 
-            filePath: req.file.path
         });
 
         await newUser.save();

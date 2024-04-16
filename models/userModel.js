@@ -20,14 +20,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    filePath: {
-        type: String,
-        required: true
-    },
-    profileThumbImg: {
-        type: String,
-        required: true
-    },
+    // profileThumbImg: {
+    //     type: String,
+    //     required: true
+    // },
     accountCreatedDate: {
         type: Date,
         required: true,
