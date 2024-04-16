@@ -1,6 +1,9 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import authJoi from "../validation/authJoi.js";
+import jwt from "jsonwebtoken";
+
+// use sign up
 
 export const signup = async (req, res) => {
     try {
@@ -46,3 +49,37 @@ export const signup = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
+
+// use login
+
+export const login =  async (req, res) => {
+    try {
+        
+        const { email, password } = req.body;
+
+          // find in user email in mongodb
+
+        const validUser = await User.findOne({ email })
+        if(!validUser)  return res.status(404).json({ message: "User not found" })  
+
+        // checking  password
+        const validPassword = bcrypt.compareSync(password, validUser.password);
+        if(!validPassword) return res.status(401).json({ message: "Wrong credentials" }) 
+
+        // jwt setting
+        const token = jwt.sign({ id: validUser._id}, process.env.JWT_SECRET)
+        const { password: hashedPassword, ...rest } = validUser._doc;
+        const expiryDate = new Date(Date.now() + 3600000);
+
+        // cookie setting 
+        res.cookie('access_token', token, { httpOnly: true, expires: expiryDate })
+        .status(200).json(rest)
+
+
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
