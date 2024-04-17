@@ -1,4 +1,3 @@
-import { boolean } from "joi";
 import  mongoose from "mongoose";
 
 // products schema creating
@@ -25,7 +24,7 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     isDeleted: {
-        type: boolean,
+        type: Boolean,
         required: false
     }
 })

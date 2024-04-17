@@ -1,5 +1,5 @@
-import Products from "../models/productsModel";
-import { errorHandler } from "../error/error";
+import Products from "../models/productsModel.js";
+import { errorHandler } from "../error/error.js";
 import jwt from "jsonwebtoken";
 
 export const allProducts = async (req, res, next) => {
@@ -29,3 +29,4 @@ export const allProducts = async (req, res, next) => {
         return next(errorHandler(500, "Unable to get products", error));
     }
 };
+
