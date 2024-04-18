@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import authRoute from "./routes/authRoute.js";
-// import productRoute from "./routes/productRoute.js";
+import productRoute from "./routes/productRoute.js";
 import adminRoute from "./routes/adminRoute.js";
 
 dotenv.config();
@@ -14,6 +14,7 @@ const PORT = process.env.PORT || 7000
 // middlewares
 // users
 app.use("/api/users", authRoute);
+app.use("/api/users", productRoute);
 // admin
 app.use("/api/admin", adminRoute);
 

@@ -1,7 +1,6 @@
-import  mongoose from "mongoose";
+import mongoose from "mongoose";
 
-// products schema creating
-
+// Products schema creation
 const productSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -13,11 +12,11 @@ const productSchema = new mongoose.Schema({
     },
     price: {
         type: Number,
-        requrired: true
+        required: true 
     },
     productImg: {
         type: String,
-        required:  true
+        required: true
     },
     category: {
         type: String,
@@ -27,7 +26,7 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         required: false
     }
-})
+});
 
 const Products = mongoose.model("Products", productSchema);
 

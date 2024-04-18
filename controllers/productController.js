@@ -1,10 +1,12 @@
 import Products from "../models/productsModel.js";
 import { errorHandler } from "../error/error.js";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
 
 export const allProducts = async (req, res, next) => {
     try {
+
         // Check if the request contains a JWT token
+
         const token = req.cookies.access_token;
         if (!token) {
             return res.status(401).json({ message: "Unauthorized - No token provided" });
@@ -17,6 +19,7 @@ export const allProducts = async (req, res, next) => {
             }
 
             // Token is valid, user is authenticated
+            
             Products.find()
                 .then((products) => {
                     return res.status(200).json({ products });
@@ -25,6 +28,7 @@ export const allProducts = async (req, res, next) => {
                     return next(errorHandler(500, "Unable to get products", error));
                 });
         });
+
     } catch (error) {
         return next(errorHandler(500, "Unable to get products", error));
     }
