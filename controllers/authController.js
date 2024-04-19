@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import authJoi from "../validation/authJoi.js";
 import jwt from "jsonwebtoken";
 import { errorHandler } from "../error/error.js";
+import cloudinary from "cloudinary";
 
 // use sign up
 
@@ -32,7 +33,7 @@ export const signup = async (req, res, next) => {
             username : result.username,
             email: result.email,
             password: hashedPassword,
-            profileImg: req.file ? req.file.filename : null 
+            profileImg:  req.cloudinaryImageUrl      //req.file ? req.file.filename : null 
         });
 
         // Save the new user to the database
@@ -71,7 +72,7 @@ export const login =  async (req, res, next) => {
         // jwt setting
         const token = jwt.sign({ id: validUser._id}, process.env.JWT_SECRET)
         const { password: hashedPassword, ...rest } = validUser._doc;
-        const expiryDate = new Date(Date.now() + 3600000);
+        const expiryDate = new Date(Date.now() + 60 * 1000);
 
         // cookie setting 
         res.cookie('access_token', token, { httpOnly: true, expires: expiryDate })

@@ -17,7 +17,7 @@ export const createProducts = async (req, res, next) => {
             description: result.description,
             price: result.price,
             category: result.category,
-            productImg: req.file ? req.file.filename : null,
+            productImg: req.cloudinaryImageUrl //req.file ? req.file.filename : null,
         });
 
         await newProduct.save();

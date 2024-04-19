@@ -1,9 +1,9 @@
 import express from "express";
 import { createProducts } from "../controllers/adminProductsAddController.js";
-import uploadProducts from "../upload/uploadProducts.js";
+import uploadImage from "../upload/upload.js";
 
 const router = express.Router();
 
-router.post("/createProducts", uploadProducts.single("productImg"), createProducts); 
+router.post("/createProducts", uploadImage, createProducts); 
 
 export default router

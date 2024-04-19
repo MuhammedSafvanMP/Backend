@@ -34,6 +34,8 @@ export const allProducts = async (req, res, next) => {
     }
 };
 
+// show product by Id
+
 export const productGetId = async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -67,5 +69,46 @@ export const productGetId = async (req, res, next) => {
         });
     } catch (error) {
         return next(errorHandler(500, "Unable to get product", error));
+    }
+};
+
+
+//  show products by category
+
+export const userProductByCategory = async (req, res, next) => {
+    try {
+        const { categoryName } = req.params;
+        
+        // Check if the request contains a JWT token
+        const token = req.cookies.access_token;
+        if (!token) {
+            return res.status(401).json({ message: "Unauthorized - No token provided" });
+        }
+
+        // Verify the JWT token
+        jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+            if (err) {
+                return res.status(401).json({ message: "Unauthorized - Invalid token" });
+            }
+
+            // Token is valid, user is authenticated
+            
+            try {
+                // Find products by category
+                const products = await Products.find({
+                    category: { $regex: new RegExp(categoryName, "i") }
+                });
+                
+                if (products.length === 0) {
+                    return res.status(404).json({ message: "No items found in the given category" });
+                }
+                
+                res.status(200).json({ products });
+            } catch (error) {
+                return next(errorHandler(500, "Unable to get products by category", error));
+            }
+        });
+    } catch (error) {
+        return next(errorHandler(500, "Unable to get products by category", error));
     }
 };
