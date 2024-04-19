@@ -1,5 +1,5 @@
 import express from "express";
-import { addToCart, allProducts, productGetId } from "../controllers/productController.js";
+import { addToCart, allProducts, productGetId, viewCart } from "../controllers/productController.js";
 import { userToken } from "../middlewares/userMiddleware.js";
 
 
@@ -11,7 +11,9 @@ router.get("/products/:id", userToken, productGetId);
 router.get("/products/category/:categoryname", userToken, (productGetId));
 
 
-router.get("/:id/cart", userToken, addToCart);
+router.post("/:id/cart", userToken, addToCart);
+router.get("/:id/cart", userToken, viewCart);
+
 
 
 
