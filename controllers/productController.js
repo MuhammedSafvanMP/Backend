@@ -1,6 +1,9 @@
 import Products from "../models/productsModel.js";
 import { errorHandler } from "../middlewares/error.js";
-import jwt from "jsonwebtoken";
+import User from "../models/userModel.js";
+
+
+// show all products
 
 export const allProducts = async (req, res, next) => {
     try {
@@ -23,21 +26,6 @@ export const allProducts = async (req, res, next) => {
 export const productGetId = async (req, res, next) => {
     try {
         const { id } = req.params;
-        
-        // Check if the request contains a JWT token
-        const token = req.cookies.access_token;
-        if (!token) {
-            return res.status(401).json({ message: "Unauthorized - No token provided" });
-        }
-
-        // Verify the JWT token
-        jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
-            if (err) {
-                return res.status(401).json({ message: "Unauthorized - Invalid token" });
-            }
-
-            // Token is valid, user is authenticated
-            
             try {
                 // Find the product by ID
                 const findProduct = await Products.findById(id);
@@ -48,11 +36,10 @@ export const productGetId = async (req, res, next) => {
                 
                 res.status(200).json({ product: findProduct });
             } catch (error) {
-                return next(errorHandler(500, "Unable to get product", error));
+                return next(errorHandler(404, "Unable to get product", error));
             }
-        });
     } catch (error) {
-        return next(errorHandler(500, "Unable to get product", error));
+        return next(errorHandler(404, "Unable to get product", error));
     }
 };
 
@@ -60,27 +47,12 @@ export const productGetId = async (req, res, next) => {
 //  show products by category
 
 export const userProductByCategory = async (req, res, next) => {
-    try {
-        const { categoryName } = req.params;
-        
-        // Check if the request contains a JWT token
-        const token = req.cookies.access_token;
-        if (!token) {
-            return res.status(401).json({ message: "Unauthorized - No token provided" });
-        }
 
-        // Verify the JWT token
-        jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
-            if (err) {
-                return res.status(401).json({ message: "Unauthorized - Invalid token" });
-            }
-
-            // Token is valid, user is authenticated
-            
-            try {
+        try {
+            const { categoryname } = req.params;
                 // Find products by category
                 const products = await Products.find({
-                    category: { $regex: new RegExp(categoryName, "i") }
+                    category: { $regex: new RegExp(categoryname, "i") }
                 });
                 
                 if (products.length === 0) {
@@ -91,8 +63,41 @@ export const userProductByCategory = async (req, res, next) => {
             } catch (error) {
                 return next(errorHandler(500, "Unable to get products by category", error));
             }
-        });
+   
+};
+
+// Add to cart
+
+export const addToCart = async (req, res, next) => {
+    try {
+        const userId = req.params.userId;
+        const productId = req.params.productId;
+
+        // Find user by ID
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Find product by ID
+        const product = await Products.findById(productId);
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        // Check if product is already in the cart
+        const isProductInCart = user.cart.some(item => item.productId.toString() === productId);
+        if (isProductInCart) {
+            return res.status(400).json({ message: "Product already in cart" });
+        }
+
+        // Add product to user's cart
+        user.cart.push({ productId: productId, quantity: 1 });
+        await user.save();
+
+        return res.status(200).json({ message: "Product added to cart successfully" });
     } catch (error) {
-        return next(errorHandler(500, "Unable to get products by category", error));
+        // Handle any errors
+        return next(error);
     }
 };
