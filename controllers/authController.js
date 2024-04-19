@@ -2,8 +2,7 @@ import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import authJoi from "../validation/authJoi.js";
 import jwt from "jsonwebtoken";
-import { errorHandler } from "../error/error.js";
-import cloudinary from "cloudinary";
+import { errorHandler } from "../middlewares/error.js";
 
 // use sign up
 
@@ -70,7 +69,7 @@ export const login =  async (req, res, next) => {
         if(!validPassword) return next(errorHandler(401, "Wrong credentials"));
 
         // jwt setting
-        const token = jwt.sign({ id: validUser._id}, process.env.JWT_SECRET)
+        const token = jwt.sign({ id: validUser._id}, process.env.USER_JWT_SECRET)
         const { password: hashedPassword, ...rest } = validUser._doc;
         const expiryDate = new Date(Date.now() + 60 * 1000);
 
