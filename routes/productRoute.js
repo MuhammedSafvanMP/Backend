@@ -20,6 +20,10 @@ router.delete("/:id/cart/:itemId", userToken, removeCart);
 
 
 
+// wishlist routes
+
+
+
 
 
 export default router
