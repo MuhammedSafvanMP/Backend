@@ -125,6 +125,43 @@ export const viewCart = async (req, res, next) => {
     }
 }
 
+// Add cart quantity
+
+export const updateCartItemQuantity = async (req, res, next)  => {
+    try {
+        const userId = req.params.userId;
+        const { id, quantityChange } = req.body;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({message: "User not found"});
+        }
+
+        const cartItem = user.cart.id(id);
+        if (!cartItem) {
+            return res.status(404).json({message: "Cart item not found"});
+        }
+
+        if (typeof quantityChange !== 'number' || isNaN(quantityChange)) {
+            return res.status(400).json({message: "Invalid quantity change"});
+        }
+
+        cartItem.quantity += quantityChange;
+
+        if (cartItem.quantity > 0) {
+            await user.save();
+            return res.status(200).json({message: "Cart item quantity updated"});
+        } else {
+            // // If quantity becomes zero or negative, remove the item from the cart
+            // user.cart.pull(id);
+            await user.save();
+            return res.status(200).json({message: "Cart item removed"});
+        }
+        
+    } catch (error) {
+        return next(error);   
+    }
+}
 
 // Remove A cart 
 
