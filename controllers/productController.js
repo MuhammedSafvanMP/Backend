@@ -124,3 +124,34 @@ export const viewCart = async (req, res, next) => {
        return next(error)        
     }
 }
+
+
+// Remove A cart 
+
+
+export const removeCart = async (req, res, next) =>{
+    try {
+        const userId = req.params.userId;
+        const productId = req.params.productId;
+
+        if(!productId){
+            return res.status(400).json({message: "Product ID not provided"});
+        }
+
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(400).json({message: "User not found"});
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(userId, {$pull: {cart: productId}}, {new: true});
+
+        if(!updatedUser){
+            return res.status(400).json({message: "Product not found in the user's cart"});
+        }
+
+        return res.status(200).json({message: "Product removed successfully"});
+
+    } catch (error) {
+        return next(error);
+    }
+}
