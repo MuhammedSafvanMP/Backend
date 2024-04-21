@@ -1,7 +1,8 @@
 import express from "express";
-import { addToWishlist, allProducts,  productGetId, removeWishlist, userProductByCategory, viewWishlist } from "../controllers/productController.js";
+import {  allProducts,  productGetId,  userProductByCategory  } from "../controllers/productController.js";
 import { userToken } from "../middlewares/userMiddleware.js";
 import { addToCart, decrementCartItemQuantity, incrementCartItemQuantity, removeCart, viewCart } from "../controllers/cartController.js";
+import { addToWishlist, removeWishlist, viewWishlist } from "../controllers/wishlistController.js";
 
 
 const router = express.Router();
