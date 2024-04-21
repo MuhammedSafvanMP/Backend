@@ -244,31 +244,35 @@ export const decrementCartItemQuantity = async (req, res, next) => {
 // Remove A cart 
 
 
-export const removeCart = async (req, res, next) =>{
+export const removeCart = async (req, res, next) => {
     try {
-        const userId = req.params.userId;
-        const productId = req.params.productId;
+        const { userId, itemId } = req.params;
 
-        if(!productId){
-            return res.status(400).json({message: "Product ID not provided"});
-        }
-
+        // Find user by ID
         const user = await User.findById(userId);
-        if(!user){
-            return res.status(400).json({message: "User not found"});
+        if (!user) {
+            return res.status(400).json({ message: "User not found" });
         }
 
-        const updatedUser = await User.findByIdAndUpdate(userId, {$pull: {cart: productId}}, {new: true});
-
-        if(!updatedUser){
-            return res.status(400).json({message: "Product not found in the user's cart"});
+        // Find product by ID
+        const product = await Products.findById(itemId);
+        if (!product) {
+            return res.status(400).json({ message: "Product not found" });
         }
 
-        return res.status(200).json({message: "Product removed successfully"});
+        // Find and delete cart item
+        const cartItem = await Cart.findOneAndDelete({ userId: user._id, productId: product._id });
+
+        if (!cartItem) {
+            return res.status(400).json({ message: "Product not found in the user's cart" });
+        }
+
+        return res.status(200).json({ message: "Product removed successfully" });
 
     } catch (error) {
         return next(error);
     }
-}
+};
+
 
 

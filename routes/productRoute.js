@@ -17,8 +17,7 @@ router.post("/:userid/cart/:id", userToken, addToCart);
 router.get("/:id/cart", userToken, viewCart);
 router.patch("/:userid/cart/:id/increment", userToken, incrementCartItemQuantity);
 router.patch("/:userid/cart/:id/decrement", userToken, decrementCartItemQuantity);
-
-router.delete("/:id/cart/:itemId", userToken, removeCart);
+router.delete("/:userId/cart/:itemId/remove", userToken, removeCart);
 
 
 
