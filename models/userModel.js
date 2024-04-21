@@ -32,7 +32,11 @@ const userSchema = new mongoose.Schema({
     isDeleted: {
         type: Boolean,
         default: false
-    }
+    },
+    cart:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Cart"
+    }]
 
 }, {timestamps: true});
 
