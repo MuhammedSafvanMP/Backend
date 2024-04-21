@@ -20,10 +20,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    // profileThumbImg: {
-    //     type: String,
-    //     required: true
-    // },
     accountCreatedDate: {
         type: Date,
         required: true,
@@ -36,6 +32,10 @@ const userSchema = new mongoose.Schema({
     cart:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Cart"
+    }],
+    whishlist: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"Whishlist"
     }]
 
 }, {timestamps: true});
