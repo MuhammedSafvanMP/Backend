@@ -1,6 +1,7 @@
 import express from "express";
-import { addToCart, addToWishlist, allProducts, decrementCartItemQuantity, incrementCartItemQuantity, productGetId, removeCart, removeWishlist, userProductByCategory, viewCart, viewWishlist } from "../controllers/productController.js";
+import { addToWishlist, allProducts,  productGetId, removeWishlist, userProductByCategory, viewWishlist } from "../controllers/productController.js";
 import { userToken } from "../middlewares/userMiddleware.js";
+import { addToCart, decrementCartItemQuantity, incrementCartItemQuantity, removeCart, viewCart } from "../controllers/cartController.js";
 
 
 const router = express.Router();
@@ -18,6 +19,7 @@ router.get("/:id/cart", userToken, viewCart);
 router.patch("/:userid/cart/:id/increment", userToken, incrementCartItemQuantity);
 router.patch("/:userid/cart/:id/decrement", userToken, decrementCartItemQuantity);
 router.delete("/:userId/cart/:itemId/remove", userToken, removeCart);
+
 
 
 
