@@ -317,3 +317,62 @@ export const addToWishlist = async (req, res, next) => {
         return next(error);
     }
 };
+
+
+// view user wishlist
+
+export const viewWishlist = async (req, res, next) => {
+    try {
+        const { id } = req.params; 
+        const user = await User.findById(id).populate({
+            path: 'wishlist',
+            populate: { path: 'productId' }
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (!user.wishlist || user.wishlist.length === 0) {
+            return res.status(200).json({ message: "User wishlist is empty", data: [] });
+        }
+
+        res.status(200).json(user.wishlist);
+    } catch (error) {
+        return next(error);
+    }
+}
+
+
+// user wishlist remove
+
+export const removeWishlist = async (req, res, next) => {
+    try {
+        const { userId, itemId } = req.params;
+
+        // Find user by ID
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+
+        // Find product by ID
+        const product = await Products.findById(itemId);
+        if (!product) {
+            return res.status(400).json({ message: "Product not found" });
+        }
+
+        // Find and delete wishlist item
+        const wishlistItem = await Wishlist.findOneAndDelete({ userId: user._id, productId: product._id });
+        
+        if (!wishlistItem) {
+            return res.status(404).json({ message: "Product not found in the user's wishlist" });
+        }
+
+        return res.status(200).json({ message: "Product removed from wishlist successfully" });
+
+    } catch (error) {
+        return next(error);
+    }
+};

@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 
-// creating user schema
-
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -29,16 +27,15 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    cart:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Cart"
-    }],
-    whishlist: [{
+    cart: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref:"Whishlist"
+        ref: "Cart"
+    }],
+    wishlist: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Wishlist"
     }]
-
-}, {timestamps: true});
+}, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);
 export default User;

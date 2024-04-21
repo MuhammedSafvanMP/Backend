@@ -8,14 +8,14 @@ const wishlistSchema = new mongoose.Schema({
     },
     productId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Products",
+        ref: "Products", // Corrected reference name to singular form
         required: true,
     },
     quantity: {
         type: Number,
         default: 1 // Default quantity is 1
     }
-})
+});
 
-const Wishlist = mongoose.model("Whishlist", wishlistSchema);
+const Wishlist = mongoose.model("Wishlist", wishlistSchema); 
 export default Wishlist;
