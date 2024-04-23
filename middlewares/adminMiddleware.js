@@ -10,7 +10,7 @@ export const adminToken =  (req, res, next) => {
             return res.status(403).json({ message: "Token is not provided" });
         }
 
-        Jwt.verify(token, process.env.USER_JWT_SECRET, (err, decode) => {
+        Jwt.verify(token, process.env.ADMIN_JWT_SECRET , (err, decode) => {
             if (err) {
                 return res.status(401).json({ message: "Unauthorized" });
             }

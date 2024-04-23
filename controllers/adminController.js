@@ -1,6 +1,11 @@
 import Jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import User from "../models/userModel.js";
 dotenv.config();
+
+
+
+// admin login
 
 export const adminLogin = async (req, res, next) => {
     try {
@@ -10,7 +15,7 @@ export const adminLogin = async (req, res, next) => {
 
         if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
             const token = Jwt.sign({ email }, process.env.ADMIN_JWT_SECRET);
-            // // cookie setting 
+             // cookie setting 
         res.cookie('access_token', token, { httpOnly: true })
         .status(200).json({ message: "Admin logged in successfully", token })
 
@@ -22,3 +27,25 @@ export const adminLogin = async (req, res, next) => {
         next(error);
     }
 };
+
+
+// list all users
+
+
+export const allUsers = async (req, res, next) => {
+    try {
+        
+        // find all users in db
+
+        const allusers = await User.find()
+
+        if(allUsers.length === 0){
+            return res.status(404).json({message: "No users in database"})
+        }
+
+        res.status(200).json(allusers);
+
+    } catch (error) {
+        next(error)
+    }
+}
