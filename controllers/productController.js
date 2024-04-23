@@ -1,6 +1,5 @@
 import Products from "../models/productsModel.js";
 import { errorHandler } from "../middlewares/error.js";
-import User from "../models/userModel.js";
 
 // show all products
 
@@ -63,7 +62,7 @@ export const userProductByCategory = async (req, res, next) => {
                 
                 res.status(200).json({ products });
             } catch (error) {
-                return next(errorHandler(500, "Unable to get products by category", error));
+                return next(errorHandler(404, "Unable to get products by category", error));
             }
    
 };

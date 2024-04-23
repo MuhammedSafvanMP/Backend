@@ -31,8 +31,4 @@ router.get("/:id/wishlist", userToken, viewWishlist);
 router.delete("/:userId/wishlist/:itemId/remove", userToken, removeWishlist);
 
 
-
-
-
-
 export default router
