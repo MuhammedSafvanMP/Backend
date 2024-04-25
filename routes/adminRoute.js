@@ -1,5 +1,5 @@
 import express from "express";
-import { adminViewAllProducts, createProducts } from "../controllers/adminProductsAddController.js";
+import { adminViewAllProducts, adminViewProductById, createProducts } from "../controllers/adminProductsAddController.js";
 import uploadImage from "../middlewares/upload.js";
 import { adminToken } from "../middlewares/adminMiddleware.js";
 import { adminLogin, adminViewUserById, allUsers } from "../controllers/adminController.js";
@@ -20,7 +20,10 @@ router.get("/user/:id", adminToken,  adminViewUserById);
 // product creating
 router.post("/createProducts", adminToken,  uploadImage, createProducts); 
 // view all products
-router.get("/products", adminToken, adminViewAllProducts);
+router.get("/adminProducts", adminToken, adminViewAllProducts);
+// view spesific user
+router.get("/adminProducts/:productId", adminToken, adminViewProductById);
+
 
 
 export default router

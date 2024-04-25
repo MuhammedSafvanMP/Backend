@@ -52,3 +52,21 @@ export const  adminViewAllProducts = async (req, res, next) => {
         next(error);
     }
 }
+
+
+// view product by id 
+
+
+export const adminViewProductById = async (req, res, next) => {
+    try {
+        const { productId } = req.params;
+
+        const findProduct = await Products.findById(productId);
+        if(!findProduct){
+            return res.status(404).json({message: "Product not found"})
+        }
+        res.status(200).json(findProduct);
+    } catch (error) {
+        return next(error);
+    }
+}
