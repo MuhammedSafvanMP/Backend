@@ -70,3 +70,30 @@ export const adminViewProductById = async (req, res, next) => {
         return next(error);
     }
 }
+
+
+// view product by category 
+
+
+export const adminProductByCategory = async (req, res, next) => {                                                                                            
+
+    try {
+        const { categoryname } = req.params;
+            // Find products by category
+            const products = await Products.find({
+                $or: [
+                    { category: { $regex: new RegExp(categoryname, 'i') } },
+                    { title: { $regex: new RegExp(categoryname, 'i') } },
+                ]
+            }).select('title category price');
+            
+            if (products.length === 0) {
+                return res.status(404).json({ message: "No items found in the given category" });
+            }
+            
+            res.status(200).json({ products });
+        } catch (error) {
+            return next(errorHandler(404, "Unable to get products by category", error));
+        }
+
+};
