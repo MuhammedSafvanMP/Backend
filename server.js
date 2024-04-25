@@ -17,7 +17,7 @@ app.use("/api/users", authRoute);
 app.use("/api/users", productRoute);
 // admin
 app.use("/api/admin", adminRoute);
-app.use("/api/admin", adminRoute);
+
 
 // custom middleware
 app.use((err, req, res, next) => {

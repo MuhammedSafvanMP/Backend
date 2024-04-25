@@ -144,10 +144,14 @@ export const decrementCartItemQuantity = async (req, res, next) => {
             // If the product already exists, decrement the quantity
             if(typeof quantityDecrement !== "number"){
                 return res.status(400).json({message: "Bad request"})
-            }else{
+            }
+            if(cartItem.quantity - quantityDecrement >= 0){
                 cartItem.quantity -= quantityDecrement;
                 await cartItem.save();
-
+            }
+            else{
+                cartItem.quantity = 1
+                await cartItem.save();
             }
             
         }

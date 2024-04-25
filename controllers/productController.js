@@ -44,7 +44,7 @@ export const productGetId = async (req, res, next) => {
 
 //  show products by category
 
-export const userProductByCategory = async (req, res, next) => {
+export const userProductByCategory = async (req, res, next) => {                                                                                            
 
         try {
             const { categoryname } = req.params;

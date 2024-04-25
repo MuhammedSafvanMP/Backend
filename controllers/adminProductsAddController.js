@@ -1,6 +1,9 @@
 import Products from "../models/productsModel.js";
 import porductJoi from "../validation/productJoi.js";
 
+
+// create products
+
 export const createProducts = async (req, res, next) => {
     try {
         // Manual validation (optional but recommended)
@@ -32,3 +35,20 @@ export const createProducts = async (req, res, next) => {
         }
     }
 };
+
+
+// view all products 
+
+export const  adminViewAllProducts = async (req, res, next) => {
+    try {
+        const allProcucts = await Products.find();
+
+        if(!allProcucts){
+            return res.status(404).json({message: "Product not found"});
+        }
+
+        res.status(200).json(allProcucts);
+    } catch (error) {
+        next(error);
+    }
+}
