@@ -1,5 +1,5 @@
 import express from "express";
-import { adminProductByCategory, adminViewAllProducts, adminViewProductById, createProducts } from "../controllers/adminProductsAddController.js";
+import { adminProductByCategory, adminUpdateProducts, adminViewAllProducts, adminViewProductById, createProducts } from "../controllers/adminProductsAddController.js";
 import uploadImage from "../middlewares/upload.js";
 import { adminToken } from "../middlewares/adminMiddleware.js";
 import { adminLogin, adminViewUserById, allUsers } from "../controllers/adminController.js";
@@ -25,6 +25,9 @@ router.get("/products", adminToken, adminViewAllProducts);
 router.get("/products/:productId", adminToken, adminViewProductById);
 // view product category
 router.get("/products/category/:categoryname", adminToken, adminProductByCategory);
+// edit product by id
+router.patch("products/edit/:productId", adminToken, adminUpdateProducts);
+
 
 
 

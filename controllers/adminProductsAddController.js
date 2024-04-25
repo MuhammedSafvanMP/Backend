@@ -1,5 +1,5 @@
 import Products from "../models/productsModel.js";
-import porductJoi from "../validation/productJoi.js";
+import productJoi from "../validation/productJoi.js";
 
 
 // create products
@@ -97,3 +97,41 @@ export const adminProductByCategory = async (req, res, next) => {
         }
 
 };
+
+
+// update products
+
+export const adminUpdateProducts = async (req, res, next) => {
+    try {
+        const { productId } = req.params;
+
+        const findProduct = await Products.findById(productId);
+
+        if (!findProduct) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        const { error, value } = await productJoi.validateAsync(req.body);
+
+        if (error) {
+            return res.status(400).json({ message: error.details[0].message });
+        }
+
+        const { title, description, price, productImg, category } = value;
+
+        // Update the product properties
+        if (title) findProduct.title = title;
+        if (description) findProduct.description = description;
+        if (price) findProduct.price = price;
+        if (productImg) findProduct.productImg = productImg;
+        if (category) findProduct.category = category;
+
+        // Save the updated product
+        await findProduct.save();
+
+        res.status(200).json({ message: "Product successfully updated" });
+
+    } catch (error) {
+        return next(error);
+    }
+}
