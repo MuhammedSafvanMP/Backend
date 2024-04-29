@@ -3,7 +3,7 @@ import {  allProducts,  productGetId,  userProductByCategory  } from "../control
 import { userToken } from "../middlewares/userMiddleware.js";
 import { addToCart, decrementCartItemQuantity, incrementCartItemQuantity, removeCart, viewCart } from "../controllers/cartController.js";
 import { addToWishlist, removeWishlist, viewWishlist } from "../controllers/wishlistController.js";
-import { payment } from "../controllers/userPaymentController.js";
+import { payment, success } from "../controllers/userPaymentController.js";
 
 
 const router = express.Router();
@@ -35,6 +35,6 @@ router.delete("/:userId/wishlist/:itemId/remove", userToken, removeWishlist);
 // payment routes
 
 router.post("/:id/payment", userToken, payment);
-
+router.get("/payment/success", userToken, success);
 
 export default router

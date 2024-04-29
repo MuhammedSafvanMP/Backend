@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 
+
 const ordersSchema = new mongoose.Schema({
 
     userId: {
@@ -31,8 +32,8 @@ const ordersSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    totalItems: {
-        type: Number,
+    paymentId: {
+        type: String,
         required: true
     }
     
