@@ -121,3 +121,11 @@ export const success = async (req, res, next) => {
         return next(error);
     }
 }
+
+
+//Payment Cancel
+
+export const cancel =  async(req,res)=> {
+    res.status(204).json({ message:"Payment canceled"})
+}
+
