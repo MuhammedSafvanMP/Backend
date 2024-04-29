@@ -3,6 +3,7 @@ import { adminDeleteProductById, adminProductByCategory, adminUpdateProducts, ad
 import uploadImage from "../middlewares/upload.js";
 import { adminToken } from "../middlewares/adminMiddleware.js";
 import { adminLogin, adminViewUserById, allUsers } from "../controllers/adminController.js";
+import { adminOrderDetails } from "../controllers/adminOrders.js";
 
 const router = express.Router();
 
@@ -31,6 +32,12 @@ router.patch("/products/edit/:productId", adminToken, adminUpdateProducts);
 router.delete("/products/delete/:productId", adminToken, adminDeleteProductById);
 
 
+
+// orders routes
+
+// view all orders
+
+router.get('/orders', adminToken, adminOrderDetails);
 
 
 export default router

@@ -111,20 +111,16 @@ export const adminUpdateProducts = async (req, res, next) => {
             return res.status(404).json({ message: "Product not found" });
         }
 
-        const { error, value } = await productJoi.validateAsync(req.body);
+        const { value } = await productJoi.validateAsync(req.body, { allowUnknown: true });
 
-        if (error) {
-            return res.status(400).json({ message: error.details[0].message });
-        }
+       
 
-        const { title, description, price, productImg, category } = value;
-
-        // Update the product properties
-        if (title) findProduct.title = title;
-        if (description) findProduct.description = description;
-        if (price) findProduct.price = price;
-        if (productImg) findProduct.productImg = productImg;
-        if (category) findProduct.category = category;
+        // Update the product properties if they exist in the request body
+        if (value.title) findProduct.title = value.title;
+        if (value.description) findProduct.description = value.description;
+        if (value.price) findProduct.price = value.price;
+        if (value.productImg) findProduct.productImg = value.productImg;
+        if (value.category) findProduct.category = value.category;
 
         // Save the updated product
         await findProduct.save();
@@ -135,6 +131,7 @@ export const adminUpdateProducts = async (req, res, next) => {
         return next(error);
     }
 }
+
 
 
 // delete product

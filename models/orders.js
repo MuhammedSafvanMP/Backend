@@ -18,6 +18,11 @@ const ordersSchema = new mongoose.Schema({
         required: true,
         default: Date.now
     },
+    orderTime: {
+        type: String,
+        required: true,
+        default: new Date().toTimeString()
+    },
     orderId: {
         type: String,
         required: true,
@@ -34,3 +39,4 @@ const ordersSchema = new mongoose.Schema({
 })
 
 const Orders = mongoose.model("Orders", ordersSchema);
+export default Orders;
