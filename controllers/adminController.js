@@ -51,7 +51,7 @@ export const allUsers = async (req, res, next) => {
 }
 
 
-// view products by Id
+// view user by Id
 
 export const adminViewUserById = async (req, res, next) => {
     try {
