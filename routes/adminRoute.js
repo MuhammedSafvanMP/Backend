@@ -3,7 +3,7 @@ import { adminDeleteProductById, adminProductByCategory, adminUpdateProducts, ad
 import uploadImage from "../middlewares/upload.js";
 import { adminToken } from "../middlewares/adminMiddleware.js";
 import { adminLogin, adminViewUserById, allUsers } from "../controllers/adminController.js";
-import { adminOrderDetails } from "../controllers/adminOrders.js";
+import { adminOrderDetails, status } from "../controllers/adminOrders.js";
 
 const router = express.Router();
 
@@ -38,6 +38,8 @@ router.delete("/products/delete/:productId", adminToken, adminDeleteProductById)
 // view all orders
 
 router.get('/orders', adminToken, adminOrderDetails);
+router.get('/status', adminToken, status);
+
 
 
 export default router

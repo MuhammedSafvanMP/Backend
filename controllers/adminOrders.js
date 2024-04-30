@@ -20,31 +20,27 @@ export const adminOrderDetails = async (req, res, next) => {
 
 //Total Revenue Generated
 
-status:async(req,res)=>{
-    const totalRevenue = await Orders.aggregate([ 
-        {
-          $group: {
-            _id: null,
-            totalProduct: { $sum: { $size: "$products" } },
-            totalRevenue: { $sum: "$totalPrice" },
-          }
+export const status = async (req, res, next) => {
+  try {
+    const totalStats = await Orders.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalProduct: { $sum: { $size: "$productId" } }, 
+          totalRevenue: { $sum: "$totalPrice" }
         }
-      ])
-  
-      if (totalRevenue.length > 0) {
-        // You have results
-        res.status(200).json({ 
-            status: "Success", 
-            data: totalRevenue[0] })
-      } else {
-        // No results found
-        res
-          .status(200)
-          .json({
-            status: "Success",
-            data: { totalProduct: 0, 
-                    totalRevenue: 0 
-                }
-             })
-         }
+      }
+    ]);
+
+    if (totalStats.length > 0) {
+      res.status(200).json({ status: "Success", data: totalStats[0] });
+    } else {
+      res.status(200).json({
+        status: "Success",
+        data: { totalProduct: 0, totalRevenue: 0 }
+      });
     }
+  } catch (error) {
+    return next(error);
+  }
+};
