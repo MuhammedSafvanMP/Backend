@@ -90,3 +90,23 @@ export const adminFindUserName = async (req, res, next) => {
         return next(errorHandler(404, "Unable to get users by category", error));
     }
 };
+
+
+// delete user by id
+
+export const adminDeleteUserById = async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+
+        const userDelete = await User.findByIdAndDelete(userId);
+
+        if (!userDelete) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({ message: "User deleted successfully" });
+
+    } catch (error) {
+        return next(error);
+    }
+}

@@ -2,7 +2,7 @@ import express from "express";
 import { adminDeleteProductById, adminProductByCategory, adminUpdateProducts, adminViewAllProducts, adminViewProductById, createProducts } from "../controllers/adminProductsAddController.js";
 import uploadImage from "../middlewares/upload.js";
 import { adminToken } from "../middlewares/adminMiddleware.js";
-import { adminFindUserName, adminLogin, adminViewUserById, allUsers } from "../controllers/adminController.js";
+import { adminDeleteUserById, adminFindUserName, adminLogin, adminViewUserById, allUsers } from "../controllers/adminController.js";
 import { adminOrderDetails, status } from "../controllers/adminOrders.js";
 
 const router = express.Router();
@@ -15,8 +15,13 @@ router.post("/login", adminLogin);
 // admin routes
 // view all users
 router.get("/viewAllUsers", adminToken,   allUsers); 
+// view user by id
 router.get("/user/:id", adminToken,  adminViewUserById); 
-router.get("/products/user/:username", adminToken, adminFindUserName);
+// search user name
+router.get("/user/findName/:username", adminToken, adminFindUserName);
+// delete user
+router.delete("/user/delete/:userId", adminToken, adminDeleteUserById);
+
 
 
 
@@ -38,8 +43,8 @@ router.delete("/products/delete/:productId", adminToken, adminDeleteProductById)
 // orders routes
 
 // view all orders
-
 router.get('/orders', adminToken, adminOrderDetails);
+// view all revenue status
 router.get('/status', adminToken, status);
 
 
