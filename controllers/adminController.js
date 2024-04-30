@@ -71,3 +71,22 @@ export const adminViewUserById = async (req, res, next) => {
         return next(error);
     }
 }
+
+
+//  show user by Name
+
+export const adminFindUserName = async (req, res, next) => {                                                                                            
+    try {
+        const { username } = req.params;
+        // Find users by username containing the category name
+        const users = await User.find({ username: { $regex: new RegExp(username, 'i') } }).select('username');
+        
+        if (users.length === 0) {
+            return res.status(404).json({ message: "No users found with usernames containing the given category name" });
+        }
+        
+        res.status(200).json({ users });
+    } catch (error) {
+        return next(errorHandler(404, "Unable to get users by category", error));
+    }
+};

@@ -2,7 +2,7 @@ import express from "express";
 import { adminDeleteProductById, adminProductByCategory, adminUpdateProducts, adminViewAllProducts, adminViewProductById, createProducts } from "../controllers/adminProductsAddController.js";
 import uploadImage from "../middlewares/upload.js";
 import { adminToken } from "../middlewares/adminMiddleware.js";
-import { adminLogin, adminViewUserById, allUsers } from "../controllers/adminController.js";
+import { adminFindUserName, adminLogin, adminViewUserById, allUsers } from "../controllers/adminController.js";
 import { adminOrderDetails, status } from "../controllers/adminOrders.js";
 
 const router = express.Router();
@@ -16,6 +16,8 @@ router.post("/login", adminLogin);
 // view all users
 router.get("/viewAllUsers", adminToken,   allUsers); 
 router.get("/user/:id", adminToken,  adminViewUserById); 
+router.get("/products/user/:username", adminToken, adminFindUserName);
+
 
 
 // product creating
