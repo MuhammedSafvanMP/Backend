@@ -22,13 +22,14 @@ export const addToCart = async (req, res, next) => {
             return res.status(404).json({ message: "Product not found" });
         }
 
-        // create a cart
+        // Check if the product already exists in the cart
         let cartItem = await Cart.findOne({ userId: user._id, productId: product._id });
-
+        
         if (cartItem) {
             // If the product already exists, increment the quantity
             cartItem.quantity++;
             await cartItem.save();
+            return res.status(200).json({ message: "Cart product incremented" });
         } else {
             // If the product doesn't exist, create a new cart item
             cartItem = await Cart.create({
@@ -36,18 +37,19 @@ export const addToCart = async (req, res, next) => {
                 productId: product._id,
                 quantity: 1
             });
+            // Add the cart item to the user's cart
+            user.cart.push(cartItem._id);
+            await user.save();
+            return res.status(200).json({ message: "Product added to cart successfully" });
         }
 
-        // Add product to user's cart
-        user.cart.push(cartItem._id);
-        await user.save();
-
-        return res.status(200).json({ message: "Product added to cart successfully" });
+        // Respond with success message
     } catch (error) {
         // Handle any errors
         return next(error);
     }
 };
+
 
 
 // view  product from cart    
@@ -186,11 +188,20 @@ export const removeCart = async (req, res, next) => {
             return res.status(400).json({ message: "Product not found" });
         }
 
-        // Find and delete cart item
+        // Find and delete cart item for the specific user and product
         const cartItem = await Cart.findOneAndDelete({ userId: user._id, productId: product._id });
 
         if (!cartItem) {
             return res.status(400).json({ message: "Product not found in the user's cart" });
+        }
+
+        // Find the index of the cart item in the user's cartItems array
+        const cartItemIndex = user.cart.find(item => item._id == cartItem._id);
+
+        // If the cart item is found, remove it from the user's cartItems array
+        if (cartItemIndex !== -1) {
+            user.cart.splice(cartItemIndex, 1);
+            await user.save();
         }
 
         return res.status(200).json({ message: "Product removed successfully" });
@@ -199,3 +210,5 @@ export const removeCart = async (req, res, next) => {
         return next(error);
     }
 };
+
+

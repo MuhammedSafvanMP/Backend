@@ -98,6 +98,15 @@ export const removeWishlist = async (req, res, next) => {
             return res.status(404).json({ message: "Product not found in the user's wishlist" });
         }
 
+        const wishlistItemIndex = user.wishlist.find(item => item._id == wishlistItem._id);
+
+        // If the wishlist item is found, remove it from the user's wishlist array
+        if (wishlistItemIndex !== -1) {
+            user.wishlist.splice(wishlistItemIndex, 1);
+            await user.save();
+        }
+
+
         return res.status(200).json({ message: "Product removed from wishlist successfully" });
 
     } catch (error) {

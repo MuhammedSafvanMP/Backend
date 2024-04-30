@@ -3,22 +3,19 @@ import User from "../models/userModel.js";
 import dotenv from "dotenv";
 dotenv.config();
 import Orders from "../models/orders.js";
-
 const stripeInstance = stripe(process.env.STRIPE_SECURITY_KEY);
 
 // user payment
 
-let paymentData = {};
+let Svalue = {};
 
 export const payment = async (req, res, next) => {
   try {
     const userId = req.params.id;
-    const user = await User.findById({ _id: userId }).populate({
+    const user = await User.findById(userId).populate({
       path: "cart",
       populate: { path: "productId" },
     });
-
-    console.log(user);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -30,17 +27,25 @@ export const payment = async (req, res, next) => {
       return res.status(200).json({ message: "User cart is empty" });
     }
 
-    const lineItems = cartProducts.map((item) => ({
-      price_data: {
-        currency: "inr",
-        product_data: {
-          name: item.productId.title,
-          description: item.productId.description,
+    let totalAmount = 0;
+    let totalQuantity = 0;
+
+    const lineItems = cartProducts.map((item) => {
+      totalAmount += item.productId.price * item.quantity;
+      totalQuantity += item.quantity;
+
+      return {
+        price_data: {
+          currency: "inr",
+          product_data: {
+            name: item.productId.title,
+            description: item.productId.description,
+          },
+          unit_amount: Math.round(item.productId.price * 100),
         },
-        unit_amount: Math.round(item.productId.price * 100),
-      },
-      quantity: 1,
-    }));
+        quantity: item.quantity,
+      };
+    });
 
     const session = await stripeInstance.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -56,52 +61,60 @@ export const payment = async (req, res, next) => {
         .json({ message: "Error occurred while creating session" });
     }
 
-    paymentData = {
+    Svalue = {
       userId,
       user,
       session,
     };
-    console.log(paymentData, "eoiiooi");
-    res
-      .status(200)
-      .json({
-        message: "Stripe payment session created successfully",
-        url: session.url,
-      });
+
+    res.status(200).json({
+      message: "Stripe payment session created successfully",
+      url: session.url,
+      totalAmount,
+      totalQuantity,
+    });
   } catch (error) {
     console.error("Error:", error);
     return next(error);
   }
 };
 
+
 // payment success
 
-export const success = async (req, res, next) => {
+export const success = async (req, res,  next) => {
   try {
-    const { id, user, session } = paymentData;
+    const { userId, user, session } = Svalue;
+    // console.log(userId, "iddd");
+    // console.log(user, "userr");
+    // console.log(session, "sessionn");
 
-    const userId = user._id;
+    // const userid = user._id;
     const cartItems = user.cart;
+    // console.log(cartItems,"ccartt")
 
     // Extract product IDs from cart items
-    const productItems = cartItems.map((item) => item.productId);
+    // const productItems = cartItems.map((item) => item.productId._id);
+    // const productItems = cartItems.map((item) => mongoose.Types.ObjectId(item.productId._id));
+    const productItems = cartItems.map((item) => item.productId._id.toString());
+    console.log(productItems,"itemsss")  
 
     // Create a new order
     const order = await Orders.create({
-      userId: id,
+      userId: userId,
       productId: productItems,
       orderId: session.id,
       paymentId: `demo ${Date.now()}`,
       totalPrice: session.amount_total / 100,
     });
-
-    if (!order) {
-      return res
-        .status(500)
-        .json({ message: "Error occurred while creating order" });
-    }
-
-    const orderId = order._id;
+    // if (!order) {
+      //   return res
+      //     .status(500)
+      //     .json({ message: "Error occurred while creating order" });
+      // }
+      
+      const orderId = order._id;
+      console.log(orderId,"orderr")
 
     // Update the user document
     const userUpdate = await User.findOneAndUpdate(
@@ -132,30 +145,28 @@ export const cancel = async (req, res) => {
 
 //Order Details
 
-export const OrederDetails = async (req, res, next) => {
+
+export const OrderDetails = async (req, res, next) => {
   try {
     const userId = req.params.id;
-    const user = await UserSchema.findOne({ _id: userId }).populate("orders");
-    // console.log("user",user)
 
-    const orderedProducts = user.orders;
+        const user = await User.findById(userId).populate({
+            path: 'orders',
+            populate: { path: 'productId' }
+        });
 
-    if (orderedProducts.length === 0) {
-      return res.status(404).json({
-        message: "You don't have any product orders.",
-        data: [],
-      });
-    }
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
 
-    const orderedItems = await Orders.find({
-      _id: { $in: orderedProducts },
-    }).populate("products");
+        if (!user.orders || user.orders.length === 0) {
+            return res.status(200).json({ message: "User order is empty", data: [] });
+        }
 
-    res.status(200).json({
-      message: "Ordered Products Details Found",
-      data: orderedItems,
-    });
+        res.status(200).json(user.orders);
   } catch (error) {
     return next(error);
   }
 };
+
+

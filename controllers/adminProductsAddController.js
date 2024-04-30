@@ -14,7 +14,7 @@ export const createProducts = async (req, res, next) => {
 
         // Validate request body using Joi
         
-        const result = await porductJoi.validateAsync(req.body);
+        const result = await productJoi.validateAsync(req.body);
 
         const newProduct = new Products({
             title: result.title,
