@@ -98,7 +98,7 @@ export const removeWishlist = async (req, res, next) => {
             return res.status(404).json({ message: "Product not found in the user's wishlist" });
         }
 
-        const wishlistItemIndex = user.wishlist.find(item => item._id == wishlistItem._id);
+        const wishlistItemIndex = user.wishlist.findIndex(item => item.equals (wishlistItem._id));
 
         // If the wishlist item is found, remove it from the user's wishlist array
         if (wishlistItemIndex !== -1) {

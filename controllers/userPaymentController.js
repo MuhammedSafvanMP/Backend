@@ -3,6 +3,7 @@ import User from "../models/userModel.js";
 import dotenv from "dotenv";
 dotenv.config();
 import Orders from "../models/orders.js";
+import Cart from "../models/cart.js";
 const stripeInstance = stripe(process.env.STRIPE_SECURITY_KEY);
 
 // user payment
@@ -67,6 +68,9 @@ export const payment = async (req, res, next) => {
       session,
     };
 
+    //  await Cart.findByIdAndDelete(user.cart._id)    
+
+
     res.status(200).json({
       message: "Stripe payment session created successfully",
       url: session.url,
@@ -82,24 +86,15 @@ export const payment = async (req, res, next) => {
 
 // payment success
 
-export const success = async (req, res,  next) => {
+
+
+export const success = async (req, res, next) => {
   try {
     const { userId, user, session } = Svalue;
-    // console.log(userId, "iddd");
-    // console.log(user, "userr");
-    // console.log(session, "sessionn");
 
-    // const userid = user._id;
     const cartItems = user.cart;
-    // console.log(cartItems,"ccartt")
-
-    // Extract product IDs from cart items
-    // const productItems = cartItems.map((item) => item.productId._id);
-    // const productItems = cartItems.map((item) => mongoose.Types.ObjectId(item.productId._id));
     const productItems = cartItems.map((item) => item.productId._id.toString());
-    console.log(productItems,"itemsss")  
 
-    // Create a new order
     const order = await Orders.create({
       userId: userId,
       productId: productItems,
@@ -107,16 +102,9 @@ export const success = async (req, res,  next) => {
       paymentId: `demo ${Date.now()}`,
       totalPrice: session.amount_total / 100,
     });
-    // if (!order) {
-      //   return res
-      //     .status(500)
-      //     .json({ message: "Error occurred while creating order" });
-      // }
-      
-      const orderId = order._id;
-      console.log(orderId,"orderr")
 
-    // Update the user document
+    const orderId = order._id;
+
     const userUpdate = await User.findOneAndUpdate(
       { _id: userId },
       {
@@ -130,12 +118,16 @@ export const success = async (req, res,  next) => {
       return res.status(500).json({ message: "Failed to update user data" });
     }
 
+    // Remove all items from user's cart after successful payment
+    await Cart.deleteMany({ _id: { $in: cartItems.map(item => item._id) } });
+
     res.status(200).json({ message: "Payment successful" });
   } catch (error) {
     console.error("Error:", error);
     return next(error);
   }
 };
+
 
 //Payment Cancel
 

@@ -196,7 +196,7 @@ export const removeCart = async (req, res, next) => {
         }
 
         // Find the index of the cart item in the user's cartItems array
-        const cartItemIndex = user.cart.find(item => item._id == cartItem._id);
+        const cartItemIndex = user.cart.findIndex(item => item.equals (cartItem._id));
 
         // If the cart item is found, remove it from the user's cartItems array
         if (cartItemIndex !== -1) {
