@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import Orders from "../models/orders.js";
 import Cart from "../models/cart.js";
+import { errorHandler } from "../middlewares/error.js";
 const stripeInstance = stripe(process.env.STRIPE_SECURITY_KEY);
 
 // user payment
@@ -21,6 +22,8 @@ export const payment = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+     // admin blocking checking
+     if(user.isDeleted == true ) return next(errorHandler(400, "Admin blocked you"));
 
     const cartProducts = user.cart;
 

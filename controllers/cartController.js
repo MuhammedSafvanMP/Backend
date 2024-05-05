@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import Cart from "../models/cart.js";
 import Products from "../models/productsModel.js";
+import { errorHandler } from "../middlewares/error.js";
 
 
 // Add to cart
@@ -15,6 +16,9 @@ export const addToCart = async (req, res, next) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
+           // admin blocking checking
+           if(user.isDeleted == true ) return next(errorHandler(400, "Admin blocked you"));
+
 
         // Find product by ID
         const product = await Products.findById(productId);
@@ -58,18 +62,18 @@ export const addToCart = async (req, res, next) => {
 export const viewCart = async (req, res, next) => {
     try {
         const {id} = req.params; 
-        console.log(id, "id");
         const user = await User.findById(id)
         .populate({
             path: 'cart',
             populate: { path: 'productId'}
         });
 
-        console.log(user, "user");
-
         if(!user){
             return res.status(404).json({message: "User not found"});
         }
+            // admin blocking checking
+            if(user.isDeleted == true ) return next(errorHandler(400, "Admin blocked you"));
+
 
         if(!user.cart || user.cart.length === 0){
             return res.status(200).json({message: "User cart is empty", data: []});
@@ -96,6 +100,9 @@ export const incrementCartItemQuantity = async (req, res, next) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
+
+         // admin blocking checking
+         if(user.isDeleted == true ) return next(errorHandler(400, "Admin blocked you"));
 
         // Find product by ID
         const product = await Products.findById(productId);
@@ -137,6 +144,8 @@ export const decrementCartItemQuantity = async (req, res, next) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
+         // admin blocking checking
+         if(user.isDeleted == true ) return next(errorHandler(400, "Admin blocked you"));
 
         // Find product by ID
         const product = await Products.findById(productId);
@@ -181,6 +190,9 @@ export const removeCart = async (req, res, next) => {
         if (!user) {
             return res.status(400).json({ message: "User not found" });
         }
+           // admin blocking checking
+           if(user.isDeleted == true ) return next(errorHandler(400, "Admin blocked you"));
+
 
         // Find product by ID
         const product = await Products.findById(itemId);

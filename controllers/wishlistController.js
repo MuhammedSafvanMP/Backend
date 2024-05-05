@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import Products from "../models/productsModel.js";
 import Wishlist from "../models/wishlist.js";
+import { errorHandler } from "../middlewares/error.js";
 
 
 // Add to cart  wishlist
@@ -60,6 +61,8 @@ export const viewWishlist = async (req, res, next) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
+         // admin blocking checking
+         if(user.isDeleted == true ) return next(errorHandler(400, "Admin blocked you"));
 
         if (!user.wishlist || user.wishlist.length === 0) {
             return res.status(200).json({ message: "User wishlist is empty", data: [] });
@@ -84,6 +87,8 @@ export const removeWishlist = async (req, res, next) => {
             return res.status(404).json({ message: "User not found" });
         }
 
+         // admin blocking checking
+         if(user.isDeleted == true ) return next(errorHandler(400, "Admin blocked you"));
 
         // Find product by ID
         const product = await Products.findById(itemId);
