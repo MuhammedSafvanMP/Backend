@@ -2,7 +2,7 @@ import express from "express";
 import { adminDeleteProductById, adminProductByCategory, adminUpdateProducts, adminViewAllProducts, adminViewProductById, createProducts } from "../controllers/adminProductsAddController.js";
 import uploadImage from "../middlewares/upload.js";
 import { adminToken } from "../middlewares/adminMiddleware.js";
-import { adminBlockUserById,  adminFindUserName, adminLogin, adminViewUserById, allUsers } from "../controllers/adminController.js";
+import { adminBlockUserById,  adminFindUserName, adminLogin, adminUnBlockUserById, adminViewUserById, allUsers } from "../controllers/adminController.js";
 import { adminOrderDetails, status } from "../controllers/adminOrders.js";
 
 const router = express.Router();
@@ -19,8 +19,11 @@ router.get("/viewAllUsers", adminToken,   allUsers);
 router.get("/user/:id", adminToken,  adminViewUserById); 
 // search user name
 router.get("/user/findName/:username", adminToken, adminFindUserName);
-// delete user
+// block user
 router.delete("/user/block/:userId", adminToken, adminBlockUserById);
+// un block user
+router.delete("/user/unblock/:userId", adminToken, adminUnBlockUserById);
+
 
 
 

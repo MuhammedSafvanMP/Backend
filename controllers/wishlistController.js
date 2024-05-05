@@ -16,6 +16,8 @@ export const addToWishlist = async (req, res, next) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
+        if(user.isDeleted == true ) return next(errorHandler(400, "Admin blocked you"));
+
 
         // Find product by ID
         const product = await Products.findById(productId);

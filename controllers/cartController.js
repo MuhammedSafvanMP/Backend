@@ -192,8 +192,7 @@ export const removeCart = async (req, res, next) => {
         }
            // admin blocking checking
            if(user.isDeleted == true ) return next(errorHandler(400, "Admin blocked you"));
-
-
+                                                                   
         // Find product by ID
         const product = await Products.findById(itemId);
         if (!product) {

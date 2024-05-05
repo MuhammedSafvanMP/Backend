@@ -110,3 +110,22 @@ export const adminBlockUserById = async (req, res, next) => {
         return next(error);
     }
 }
+
+// delete user by id
+
+export const adminUnBlockUserById = async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+
+        const userUnBlock = await User.findOneAndUpdate({_id: userId}, {$set: {isDeleted: false}});
+
+        if (!userUnBlock) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({ message: "User un Blocked successfully" });
+
+    } catch (error) {
+        return next(error);
+    }
+}
