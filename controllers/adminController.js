@@ -94,17 +94,17 @@ export const adminFindUserName = async (req, res, next) => {
 
 // delete user by id
 
-export const adminDeleteUserById = async (req, res, next) => {
+export const adminBlockUserById = async (req, res, next) => {
     try {
         const { userId } = req.params;
 
-        const userDelete = await User.findByIdAndDelete(userId);
+        const userBlock = await User.findOneAndUpdate({_id: userId}, {$set: {isDeleted: true}});
 
-        if (!userDelete) {
+        if (!userBlock) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        res.status(200).json({ message: "User deleted successfully" });
+        res.status(200).json({ message: "User Blocked successfully" });
 
     } catch (error) {
         return next(error);

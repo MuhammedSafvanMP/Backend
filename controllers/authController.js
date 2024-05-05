@@ -63,8 +63,11 @@ export const login =  async (req, res, next) => {
 
           // find in user email in mongodb
 
-        const validUser = await User.findOne({ email })
-        if(!validUser)  return next(errorHandler(404, "User not found")); 
+          const validUser = await User.findOne({ email})
+        
+          if(!validUser)  return next(errorHandler(404, "User not found")); 
+          // admin blocking checking
+          if(validUser.isDeleted == true ) return next(errorHandler(400, "Admin blocked you"));
 
         // checking  password
         const validPassword = bcrypt.compareSync(password, validUser.password);
